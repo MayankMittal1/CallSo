@@ -3,7 +3,7 @@ import axios from 'axios';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 let socket: Socket;
 let publicKey: string;
-const SOCKET_URL = 'http://10.10.0.105:3000';
+const SOCKET_URL = 'http://51.11.177.153:3000';
 
 export const initiateSocket = (publickey: string) => {
   if (!socket && publicKey !== publickey) {
@@ -49,7 +49,7 @@ export const fetchToken = (uid: any, channelName: any, tokenRole: any): Promise<
   return new Promise(function (resolve) {
     axios
       .post(
-        'http://10.10.0.105:8082/fetch_rtc_token',
+        'http://51.11.177.153:8082/fetch_rtc_token',
         {
           uid: uid,
           channelName: channelName,
