@@ -107,6 +107,8 @@ export const joinCall = async (role: any, uid: any, channel: any) => {
   await client.join(appId, channel, token, uid);
   rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
   await client.publish([rtc.localAudioTrack]);
+  var user = await client.remoteUsers[0];
+  user.audioTrack?.play();
   client.on('user-published', async (user, mediaType) => {
     await client.subscribe(user, mediaType);
     console.log('subscribe success');
