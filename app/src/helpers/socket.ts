@@ -12,7 +12,7 @@ const initClient = () => {
   client.setClientRole('host');
 };
 
-const SOCKET_URL = 'http://localhost:3000';
+const SOCKET_URL = 'http://51.11.177.153:3000';
 
 export const initiateSocket = (publickey: string) => {
   if (!client) initClient();
@@ -73,7 +73,7 @@ export const fetchToken = (uid: any, channelName: any, tokenRole: any): Promise<
   return new Promise(function (resolve) {
     axios
       .post(
-        'http://localhost:8082/fetch_rtc_token',
+        'http://51.11.177.153:8082/fetch_rtc_token',
         {
           uid: uid,
           channelName: channelName,
