@@ -32,10 +32,6 @@ export const Home = () => {
         setInCall(true);
         setCaller(data.from);
       });
-      listenAcceptCall((data: any) => {
-        setAccept(true);
-        joinCall(2, 2, data.from.slice(0, 10));
-      });
       listenLeaveCall((data: any) => {
         setAccept(false);
         setCaller('');
