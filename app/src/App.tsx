@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+import styled from 'styled-components';
 require('@solana/wallet-adapter-react-ui/styles.css');
 import { Container } from 'reactstrap';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
@@ -51,9 +52,10 @@ export const App = () => {
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <Container
-            style={{ height: '100vh', width: '100vw', padding: '0', margin: '0', background: '#0e1111' }}
+            style={{ height: '100vh', width: '100vw', padding: '0', margin: '0', background: '#0B0C0D' }}
             fluid
           >
+            <Ellipse />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/account" element={<Account />} />
@@ -65,3 +67,14 @@ export const App = () => {
     </ConnectionProvider>
   );
 };
+
+const Ellipse = styled.div`
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  left: 112px;
+  top: 150px;
+  z-index: -1;
+  background: #7a3cff;
+  filter: blur(500px);
+`;

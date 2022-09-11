@@ -9,7 +9,12 @@ import {
   startBasicCall,
   listenAcceptCall,
   joinCall,
+  leaveCall,
+  handleLeaveCall,
+  listenLeaveCall,
 } from '../helpers/socket';
+import Call from './Call';
+import OutCall from './OutCall';
 
 export const Home = () => {
   const { publicKey, wallet, signTransaction, signAllTransactions } = useWallet();
@@ -23,6 +28,7 @@ export const Home = () => {
     if (publicKey) {
       initiateSocket(publicKey.toBase58());
       listenToCall((data: any) => {
+        console.log('recieved');
         setInCall(true);
         setCaller(data.from);
       });
@@ -30,66 +36,74 @@ export const Home = () => {
         setAccept(true);
         joinCall(2, 2, data.from.slice(0, 10));
       });
+      listenLeaveCall((data: any) => {
+        setAccept(false);
+        setCaller('');
+        setInCall(false);
+        setCall(false);
+        setTo('');
+        leaveCall();
+      });
     }
   }, [publicKey]);
   return (
-    <Container style={{ height: '92vh' }} className="d-flex align-items-center">
-      <Modal
-        isOpen={call}
-        toggle={() => {
-          setCall(!call);
-        }}
-      >
-        <ModalBody>
+    <>
+      {inCall ? (
+        <Call
+          caller={caller}
+          onAccept={() => {
+            startBasicCall(1, 1, publicKey?.toBase58().slice(0, 10), caller, publicKey?.toBase58() as string);
+          }}
+          onReject={() => {
+            setCall(false);
+            leaveCall();
+            setAccept(false);
+            setCaller('');
+            setInCall(false);
+            setCall(false);
+            setTo('');
+            handleLeaveCall(caller, publicKey?.toBase58() as string);
+          }}
+        />
+      ) : call ? (
+        <OutCall
+          to={to}
+          onReject={() => {
+            setCall(false);
+            leaveCall();
+            setAccept(false);
+            setCaller('');
+            setInCall(false);
+            setCall(false);
+            setTo('');
+            handleLeaveCall(to, publicKey?.toBase58() as string);
+          }}
+        />
+      ) : (
+        <Container style={{ height: '92vh' }} className="d-flex align-items-center">
           <Row>
-            <Col>Calling {to}</Col>
-          </Row>
-        </ModalBody>
-      </Modal>
-      <Modal
-        isOpen={inCall}
-        toggle={() => {
-          setInCall(!inCall);
-        }}
-      >
-        <ModalBody>
-          <Row>
-            <Col>Call Recieved from {caller}</Col>
-          </Row>
-          <Row>
-            <Col>
+            <Col className="col-11">
+              <Input
+                type="text"
+                placeholder="Wallet"
+                onChange={(e) => {
+                  setTo(e.target.value);
+                }}
+              ></Input>
+            </Col>
+            <Col className="col-1">
               <Button
                 onClick={() => {
-                  startBasicCall(1, 1, publicKey?.toBase58().slice(0, 10), caller, publicKey?.toBase58() as string);
+                  setCall(true);
+                  handleOfferCall(to, publicKey?.toBase58() as string);
                 }}
               >
-                Accept
+                Call
               </Button>
             </Col>
           </Row>
-        </ModalBody>
-      </Modal>
-      <Row>
-        <Col className="col-11">
-          <Input
-            type="text"
-            placeholder="Wallet"
-            onChange={(e) => {
-              setTo(e.target.value);
-            }}
-          ></Input>
-        </Col>
-        <Col className="col-1">
-          <Button
-            onClick={() => {
-              setCall(true);
-              handleOfferCall(to, publicKey?.toBase58() as string);
-            }}
-          >
-            Call
-          </Button>
-        </Col>
-      </Row>
-    </Container>
+        </Container>
+      )}
+    </>
   );
 };
